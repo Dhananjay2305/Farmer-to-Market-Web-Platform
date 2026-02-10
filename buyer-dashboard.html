@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Browse fresh produce from farmers across India">
+    <title>Browse Produce - FarmDirect</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <div class="dashboard">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <a href="index.html" class="sidebar__logo">
+                🌾 FarmDirect
+            </a>
+            <nav>
+                <ul class="sidebar__nav">
+                    <li><a href="#" class="sidebar__link active" data-section="browse">🛒 Browse Produce</a></li>
+                    <li><a href="#" class="sidebar__link" data-section="offers">📤 My Offers</a></li>
+                </ul>
+            </nav>
+            <div style="position: absolute; bottom: 2rem; left: 1.5rem; right: 1.5rem;">
+                <div
+                    style="padding: 1rem; background: rgba(255,255,255,0.1); border-radius: 0.75rem; margin-bottom: 1rem;">
+                    <p style="color: var(--gray-400); font-size: 0.875rem;">Logged in as</p>
+                    <p style="color: white; font-weight: 600;" id="userName">Buyer</p>
+                </div>
+                <button onclick="logout()" class="btn btn--secondary btn--full"
+                    style="color: var(--gray-300); border-color: var(--gray-600);">
+                    Logout
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Browse Section -->
+            <section id="browseSection">
+                <div class="page-header">
+                    <h1 class="page-title">Browse Fresh Produce</h1>
+                </div>
+
+                <!-- Filters -->
+                <div class="filter-bar">
+                    <input type="text" class="form-input" id="searchCrop" placeholder="🔍 Search by crop name...">
+                    <input type="text" class="form-input" id="searchLocation" placeholder="📍 Filter by location...">
+                    <select class="form-select" id="priceSort">
+                        <option value="">Sort by Price</option>
+                        <option value="low">Price: Low to High</option>
+                        <option value="high">Price: High to Low</option>
+                    </select>
+                    <button class="btn btn--primary" onclick="loadListings()">Apply Filters</button>
+                </div>
+
+                <div class="listings-grid" id="listingsGrid">
+                    <!-- Listings will be loaded here -->
+                </div>
+            </section>
+
+            <!-- My Offers Section -->
+            <section id="offersSection" style="display: none;">
+                <div class="page-header">
+                    <h1 class="page-title">My Sent Offers</h1>
+                </div>
+                <div style="background: white; border-radius: var(--radius-xl); overflow: hidden;">
+                    <table class="offers-table" id="offersTable">
+                        <thead>
+                            <tr>
+                                <th>Crop</th>
+                                <th>Farmer</th>
+                                <th>Listed Price</th>
+                                <th>My Offer</th>
+                                <th>Status</th>
+                                <th>Contact</th>
+                            </tr>
+                        </thead>
+                        <tbody id="offersTableBody">
+                            <!-- Offers will be loaded here -->
+                        </tbody>
+                    </table>
+                    <div class="empty-state" id="noOffersMessage" style="display: none;">
+                        <div class="empty-state__icon">📤</div>
+                        <h3 class="empty-state__title">No offers sent yet</h3>
+                        <p class="empty-state__text">Browse produce and send your first offer!</p>
+                        <button class="btn btn--primary" onclick="showSection('browse')">Browse Produce</button>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Send Offer Modal -->
+    <div class="modal-overlay" id="offerModal">
+        <div class="modal">
+            <div class="modal__header">
+                <h3>Send Offer</h3>
+                <button class="modal__close" onclick="closeOfferModal()">×</button>
+            </div>
+            <div id="modalListingInfo"
+                style="padding: 1rem; background: var(--gray-50); border-radius: 0.75rem; margin-bottom: 1.5rem;">
+                <!-- Listing info will be inserted here -->
+            </div>
+            <form id="offerForm">
+                <input type="hidden" id="offerListingId">
+                <div class="form-group">
+                    <label class="form-label">Your Offer Price (₹)</label>
+                    <input type="number" class="form-input" id="offerPrice" placeholder="Enter your offer price"
+                        required min="1">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Message (Optional)</label>
+                    <textarea class="form-textarea" id="offerMessage"
+                        placeholder="Add a message to the farmer..."></textarea>
+                </div>
+                <div style="display: flex; gap: 1rem;">
+                    <button type="submit" class="btn btn--primary btn--full">Send Offer →</button>
+                    <button type="button" class="btn btn--secondary" onclick="closeOfferModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        // Check authentication
+        document.addEventListener('DOMContentLoaded', () => {
+            const user = getUser();
+            if (!user || user.role !== 'buyer') {
+                window.location.href = 'auth.html';
+                return;
+            }
+            document.getElementById('userName').textContent = user.name;
+            loadListings();
+            loadMyOffers();
+        });
+
+        // Navigation
+        document.querySelectorAll('.sidebar__link').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const section = e.target.dataset.section;
+                showSection(section);
+            });
+        });
+
+        function showSection(sectionName) {
+            document.querySelectorAll('.sidebar__link').forEach(l => l.classList.remove('active'));
+            document.querySelector(`[data-section="${sectionName}"]`)?.classList.add('active');
+
+            document.getElementById('browseSection').style.display = sectionName === 'browse' ? 'block' : 'none';
+            document.getElementById('offersSection').style.display = sectionName === 'offers' ? 'block' : 'none';
+        }
+
+        // Load all listings
+        async function loadListings() {
+            const grid = document.getElementById('listingsGrid');
+            grid.innerHTML = '<div class="spinner" style="margin: 2rem auto;"></div>';
+
+            try {
+                const crop = document.getElementById('searchCrop').value;
+                const location = document.getElementById('searchLocation').value;
+
+                let url = '/listings?status=available';
+                if (crop) url += `&crop=${encodeURIComponent(crop)}`;
+                if (location) url += `&location=${encodeURIComponent(location)}`;
+
+                const response = await api.get(url);
+                let listings = response.listings || [];
+
+                // Sort by price
+                const sortOrder = document.getElementById('priceSort').value;
+                if (sortOrder === 'low') {
+                    listings.sort((a, b) => a.price - b.price);
+                } else if (sortOrder === 'high') {
+                    listings.sort((a, b) => b.price - a.price);
+                }
+
+                if (listings.length === 0) {
+                    grid.innerHTML = `
+                        <div class="empty-state" style="grid-column: 1/-1;">
+                            <div class="empty-state__icon">🔍</div>
+                            <h3 class="empty-state__title">No listings found</h3>
+                            <p class="empty-state__text">Try adjusting your filters or check back later</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                grid.innerHTML = listings.map(listing => `
+                    <div class="card">
+                        <img src="${listing.image || 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=400&h=200&fit=crop'}" 
+                             alt="${listing.cropName}" class="card__image">
+                        <div class="card__content">
+                            <h3 class="card__title">${listing.cropName}</h3>
+                            <div class="card__meta">
+                                📍 ${listing.location}
+                            </div>
+                            <p style="color: var(--gray-600); margin-bottom: 0.5rem;">
+                                ${listing.quantity} ${listing.unit} available
+                            </p>
+                            <p style="color: var(--gray-500); font-size: 0.875rem; margin-bottom: 1rem;">
+                                by ${listing.farmerId?.name || 'Farmer'}
+                            </p>
+                            <div class="card__price">
+                                ₹${listing.price} <span>per ${listing.unit}</span>
+                            </div>
+                            <div class="card__footer">
+                                <button class="btn btn--primary btn--sm" onclick='openOfferModal(${JSON.stringify(listing)})'>
+                                    💰 Send Offer
+                                </button>
+                                <a href="listing.html?id=${listing._id}" class="btn btn--secondary btn--sm">
+                                    View Details
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                grid.innerHTML = `<p style="color: var(--error);">Error loading listings: ${error.message}</p>`;
+            }
+        }
+
+        // Load buyer's offers
+        async function loadMyOffers() {
+            try {
+                const response = await api.get('/offers/sent');
+                const offers = response.offers || [];
+                const tbody = document.getElementById('offersTableBody');
+                const noOffersMsg = document.getElementById('noOffersMessage');
+                const table = document.getElementById('offersTable');
+
+                if (offers.length === 0) {
+                    table.style.display = 'none';
+                    noOffersMsg.style.display = 'block';
+                    return;
+                }
+
+                table.style.display = 'table';
+                noOffersMsg.style.display = 'none';
+
+                tbody.innerHTML = offers.map(offer => {
+                    const farmerPhone = offer.listingId?.farmerId?.phone || '';
+                    return `
+                    <tr>
+                        <td><strong>${offer.listingId?.cropName || 'N/A'}</strong></td>
+                        <td>
+                            ${offer.listingId?.farmerId?.name || 'Unknown'}<br>
+                            <small style="color: var(--gray-500);">${offer.listingId?.farmerId?.location || ''}</small>
+                        </td>
+                        <td>₹${offer.listingId?.price || 0}</td>
+                        <td><strong style="color: var(--primary-600);">₹${offer.offerPrice}</strong></td>
+                        <td><span class="badge badge--${offer.status}">${offer.status}</span></td>
+                        <td>
+                            ${offer.status === 'accepted' ? `
+                                <div style="display: flex; gap: 0.5rem;">
+                                    <a href="https://wa.me/91${farmerPhone}" target="_blank" class="btn btn--whatsapp btn--sm">
+                                        WhatsApp
+                                    </a>
+                                    <a href="tel:+91${farmerPhone}" class="btn btn--call btn--sm">
+                                        📞 Call
+                                    </a>
+                                </div>
+                            ` : '-'}
+                        </td>
+                    </tr>
+                `}).join('');
+            } catch (error) {
+                showToast(error.message, 'error');
+            }
+        }
+
+        // Open offer modal
+        function openOfferModal(listing) {
+            document.getElementById('offerListingId').value = listing._id;
+            document.getElementById('modalListingInfo').innerHTML = `
+                <div style="display: flex; gap: 1rem; align-items: center;">
+                    <img src="${listing.image || 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=80&h=80&fit=crop'}" 
+                         style="width: 60px; height: 60px; border-radius: 0.5rem; object-fit: cover;">
+                    <div>
+                        <strong>${listing.cropName}</strong><br>
+                        <span style="color: var(--gray-500);">${listing.quantity} ${listing.unit} at ₹${listing.price}/${listing.unit}</span><br>
+                        <span style="color: var(--gray-500);">📍 ${listing.location}</span>
+                    </div>
+                </div>
+            `;
+            document.getElementById('offerPrice').value = listing.price;
+            document.getElementById('offerModal').classList.add('active');
+        }
+
+        function closeOfferModal() {
+            document.getElementById('offerModal').classList.remove('active');
+            document.getElementById('offerForm').reset();
+        }
+
+        // Send offer
+        document.getElementById('offerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const listingId = document.getElementById('offerListingId').value;
+            const offerPrice = document.getElementById('offerPrice').value;
+            const message = document.getElementById('offerMessage').value;
+
+            try {
+                await api.post('/offers', { listingId, offerPrice, message });
+                showToast('Offer sent successfully!', 'success');
+                closeOfferModal();
+                loadMyOffers();
+            } catch (error) {
+                showToast(error.message, 'error');
+            }
+        });
+
+        // Filter on Enter key
+        document.getElementById('searchCrop').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') loadListings();
+        });
+        document.getElementById('searchLocation').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') loadListings();
+        });
+    </script>
+</body>
+
+</html>
