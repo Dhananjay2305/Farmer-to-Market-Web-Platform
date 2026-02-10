@@ -20,4 +20,5 @@ This project is built to reduce farmer losses caused by middlemen by enabling di
 
 👥 Users
 > Farmers (sell produce)
+
 > Buyers/Retailers (buy produce)
