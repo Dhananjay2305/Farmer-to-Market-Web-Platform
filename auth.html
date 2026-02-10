@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Login or Register to FarmDirect - Connect with farmers and buyers directly">
+    <title>Login / Register - FarmDirect</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <div class="auth-page">
+        <!-- Left Side - Branding -->
+        <div class="auth-page__left">
+            <div class="auth-page__branding">
+                <h1>🌾 FarmDirect</h1>
+                <p>Join the revolution in Indian agriculture. Get fair prices, transparent deals, and direct
+                    connections.</p>
+                <div style="margin-top: 3rem;">
+                    <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
+                        <span style="font-size: 2rem;">👨‍🌾</span>
+                        <div>
+                            <strong style="display: block;">For Farmers</strong>
+                            <span style="opacity: 0.8;">List produce, receive offers, maximize profits</span>
+                        </div>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 1rem;">
+                        <span style="font-size: 2rem;">🏪</span>
+                        <div>
+                            <strong style="display: block;">For Buyers</strong>
+                            <span style="opacity: 0.8;">Browse fresh produce, send offers, connect directly</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Side - Auth Form -->
+        <div class="auth-page__right">
+            <div class="auth-form">
+                <a href="index.html"
+                    style="display: block; text-align: center; margin-bottom: 2rem; font-size: 1.5rem; font-weight: 700; color: var(--primary-700);">
+                    🌾 FarmDirect
+                </a>
+
+                <!-- Tabs -->
+                <div class="auth-form__tabs">
+                    <button class="auth-form__tab active" data-tab="login">Login</button>
+                    <button class="auth-form__tab" data-tab="register">Register</button>
+                </div>
+
+                <!-- Login Form -->
+                <form id="loginForm" class="auth-form__content">
+                    <div class="form-group">
+                        <label class="form-label">Phone Number</label>
+                        <input type="tel" class="form-input" id="loginPhone" placeholder="Enter your phone number"
+                            required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Password</label>
+                        <input type="password" class="form-input" id="loginPassword" placeholder="Enter your password"
+                            required>
+                    </div>
+                    <button type="submit" class="btn btn--primary btn--full btn--lg">
+                        Login →
+                    </button>
+                    <p style="text-align: center; margin-top: 1.5rem; color: var(--gray-500);">
+                        Don't have an account? <a href="#" onclick="switchTab('register')">Register here</a>
+                    </p>
+                </form>
+
+                <!-- Register Form -->
+                <form id="registerForm" class="auth-form__content" style="display: none;">
+                    <div class="form-group">
+                        <label class="form-label">I am a</label>
+                        <div class="role-toggle">
+                            <button type="button" class="role-toggle__btn active" data-role="farmer">👨‍🌾
+                                Farmer</button>
+                            <button type="button" class="role-toggle__btn" data-role="buyer">🏪 Buyer</button>
+                        </div>
+                        <input type="hidden" id="registerRole" value="farmer">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Full Name</label>
+                        <input type="text" class="form-input" id="registerName" placeholder="Enter your full name"
+                            required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Phone Number</label>
+                        <input type="tel" class="form-input" id="registerPhone" placeholder="Enter your phone number"
+                            required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Location</label>
+                        <input type="text" class="form-input" id="registerLocation" placeholder="City, State" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Password</label>
+                        <input type="password" class="form-input" id="registerPassword"
+                            placeholder="Create a password (min 6 chars)" required minlength="6">
+                    </div>
+                    <button type="submit" class="btn btn--primary btn--full btn--lg">
+                        Create Account →
+                    </button>
+                    <p style="text-align: center; margin-top: 1.5rem; color: var(--gray-500);">
+                        Already have an account? <a href="#" onclick="switchTab('login')">Login here</a>
+                    </p>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+</body>
+
+</html>
