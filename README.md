@@ -1,24 +1,44 @@
-🌾 Farmer-to-Market Web Platform
+# `append-field`
 
-This project is built to reduce farmer losses caused by middlemen by enabling direct trading between farmers and buyers. Farmers can easily upload produce listings (crop name, quantity, expected price, location, and photo). Buyers can view listings, apply filters, send offers, and connect with farmers through WhatsApp/call. The platform supports transparent pricing and helps both farmers and retailers make faster, fairer deals.
- A web platform that connects farmers directly with buyers/retailers to reduce dependency on middlemen, increase farmer profits, and ensure price transparency.
+A [W3C HTML JSON forms spec](http://www.w3.org/TR/html-json-forms/) compliant
+field appender (for lack of a better name). Useful for people implementing
+`application/x-www-form-urlencoded` and `multipart/form-data` parsers.
 
-📌 Problem Statement
+It works best on objects created with `Object.create(null)`. Otherwise it might
+conflict with variables from the prototype (e.g. `hasOwnProperty`).
 
-> In India, many farmers do not get a fair price for their produce because:
-> Middlemen control pricing
-> Farmers have limited market access
-> Lack of transparency in buying/selling
+## Installation
 
-💡 Solution
-> This platform allows:
-> Farmers to list produce directly
-> Buyers to view listings and send offers
-> Farmers to accept/reject offers
-> Direct communication via WhatsApp/Call
-> This improves farmer income and ensures fair pricing.
+```sh
+npm install --save append-field
+```
 
-👥 Users
-> Farmers (sell produce)
+## Usage
 
-> Buyers/Retailers (buy produce)
+```javascript
+var appendField = require('append-field')
+var obj = Object.create(null)
+
+appendField(obj, 'pets[0][species]', 'Dahut')
+appendField(obj, 'pets[0][name]', 'Hypatia')
+appendField(obj, 'pets[1][species]', 'Felis Stultus')
+appendField(obj, 'pets[1][name]', 'Billie')
+
+console.log(obj)
+```
+
+```text
+{ pets:
+   [ { species: 'Dahut', name: 'Hypatia' },
+     { species: 'Felis Stultus', name: 'Billie' } ] }
+```
+
+## API
+
+### `appendField(store, key, value)`
+
+Adds the field named `key` with the value `value` to the object `store`.
+
+## License
+
+MIT
