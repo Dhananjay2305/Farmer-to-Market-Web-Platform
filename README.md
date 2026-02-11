@@ -1,44 +1,49 @@
-# `append-field`
+🌾 Farmer-to-Market Web Platform (FarmDirect)
 
-A [W3C HTML JSON forms spec](http://www.w3.org/TR/html-json-forms/) compliant
-field appender (for lack of a better name). Useful for people implementing
-`application/x-www-form-urlencoded` and `multipart/form-data` parsers.
+A web platform that connects farmers directly with buyers/retailers to reduce dependency on middlemen, increase farmer profits, and ensure price transparency.
 
-It works best on objects created with `Object.create(null)`. Otherwise it might
-conflict with variables from the prototype (e.g. `hasOwnProperty`).
+📌 Problem Statement
+In India, many farmers do not get a fair price for their produce because:
+Middlemen control pricing
+Farmers have limited market access
+Lack of transparency in buying/selling
 
-## Installation
+💡 Solution
+This platform allows:
+Farmers to list produce directly
+Buyers to view listings and send offers
+Farmers to accept/reject offers
+Direct communication via WhatsApp/Call
+This improves farmer income and ensures fair pricing.
 
-```sh
-npm install --save append-field
-```
+👥 Users
 
-## Usage
+Farmers (sell produce)
 
-```javascript
-var appendField = require('append-field')
-var obj = Object.create(null)
+Buyers/Retailers (buy produce)
 
-appendField(obj, 'pets[0][species]', 'Dahut')
-appendField(obj, 'pets[0][name]', 'Hypatia')
-appendField(obj, 'pets[1][species]', 'Felis Stultus')
-appendField(obj, 'pets[1][name]', 'Billie')
+🚀 Features
+👨‍🌾 Farmer Features
 
-console.log(obj)
-```
+Register/Login as Farmer
+Add produce listing (crop, quantity, price, location, harvest date)
+Upload produce photo
+View and manage own listings
+View offers received from buyers
+Accept/Reject offers
+Mark listing as Sold
 
-```text
-{ pets:
-   [ { species: 'Dahut', name: 'Hypatia' },
-     { species: 'Felis Stultus', name: 'Billie' } ] }
-```
+🧑‍💼 Buyer Features
 
-## API
+Register/Login as Buyer
+Browse all produce listings
+Search and filter listings (crop, price, location)
+View listing details
+Send offer to farmer (price + message)
+Contact farmer directly via WhatsApp/Call
 
-### `appendField(store, key, value)`
+📊 Platform Features
 
-Adds the field named `key` with the value `value` to the object `store`.
-
-## License
-
-MIT
+Transparent pricing (farmers set expected price, buyers send offers)
+Simple UI for farmers
+Mobile-friendly design (responsive)
