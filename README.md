@@ -77,6 +77,5 @@ Lack of transparency in buying/selling
 
 
 <img width="1920" height="1080" alt="Screenshot (142)" src="https://github.com/user-attachments/assets/a8b1e2ba-3d3f-44ea-a364-cd18b2163725" />
-<img width="1920" height="1080" alt="Screenshot (145)" src="https://github.com/user-attachments/assets/2bba530b-170c-49b6-9615-c21306e06b55" />
 <img width="1920" height="1080" alt="Screenshot (143)" src="https://github.com/user-attachments/assets/b7c9885e-acc9-42ab-b068-12fd202a0068" />
 <img width="1920" height="1080" alt="Screenshot (147)" src="https://github.com/user-attachments/assets/191ba2f8-817f-49a1-a36b-6c5f5bc666bb" />
